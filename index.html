@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Índice de Madurez Cloud · KrugerTech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange:       #FF5B00;
+    --orange-light: #FF7A2E;
+    --orange-dim:   rgba(255,91,0,0.09);
+    --orange-border:rgba(255,91,0,0.25);
+    --bg:           #faf9f7;
+    --card:         #ffffff;
+    --text:         #111827;
+    --text2:        #374151;
+    --muted:        #9ca3af;
+    --border:       #e8e3dc;
+    --border2:      #f0ece6;
+    --shadow:       0 2px 8px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px;
+    display: flex; align-items: center; padding: 0 1.5rem;
+    pointer-events: none;
+  }
+  .topbar-logo {
+    display: flex; align-items: center; gap: 10px;
+    pointer-events: auto;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--orange-border);
+    border-radius: 50px;
+    padding: 6px 14px 6px 8px;
+  }
+  .topbar-logo img { height: 26px; width: auto; display: block; object-fit: contain; }
+  .topbar-logo-name {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.75rem; font-weight: 700;
+    color: var(--text); letter-spacing: 0.3px;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    padding: 80px 1.25rem 3rem;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ── BG naranja/blanco para intro/results ── */
+  .screen-bg {
+    position: fixed; inset: 0; z-index: -1;
+    background: linear-gradient(160deg, #FF5B00 0%, #FF7A2E 35%, #fff5f0 65%, #faf9f7 100%);
+  }
+  .screen-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(255,91,0,0.0)   0%,
+      rgba(255,91,0,0.0)   25%,
+      rgba(250,249,247,0.92) 58%,
+      rgba(250,249,247,1)    100%
+    );
+  }
+
+  /* ── BG claro para formularios ── */
+  .screen-plain-bg {
+    position: fixed; inset: 0; z-index: -1;
+    background: var(--bg);
+  }
+  .screen-plain-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 85% 10%, rgba(255,91,0,0.04), transparent 50%);
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    width: 100%; max-width: 520px;
+    padding: 2rem;
+    margin: 0 auto;
+  }
+  .card-sm { max-width: 480px; }
+
+  /* ══════════ INTRO ══════════ */
+  #screen-intro { padding-top: 0; }
+
+  .intro-image-hero {
+    position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 520px;
+    height: 250px; overflow: hidden;
+    z-index: 0; pointer-events: none;
+    border-radius: 0 0 28px 28px;
+  }
+  @media (min-width: 640px) {
+    .intro-image-hero { height: 210px; }
+    #screen-intro .inner { padding-top: 210px; }
+  }
+  .intro-image-hero img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center 20%;
+    display: block;
+  }
+  .intro-image-hero::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+  }
+
+  .intro-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--orange);
+    background: rgba(255,255,255,0.85);
+    border: 1px solid var(--orange-border);
+    border-radius: 50px; padding: 5px 14px;
+    margin-bottom: 0.9rem;
+  }
+  .intro-tag::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--orange); border-radius: 50%;
+  }
+  .intro-h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(1.85rem, 7vw, 2.5rem);
+    font-weight: 800; line-height: 1.1;
+    color: var(--text); margin-bottom: 0.75rem;
+  }
+  .intro-desc {
+    font-size: 0.95rem; color: var(--orange);
+    line-height: 1.65; margin-bottom: 1.5rem; font-weight: 600;
+  }
+  .stats-strip {
+    display: flex; border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg); margin-bottom: 1.5rem;
+  }
+  .stat-cell { flex: 1; text-align: center; padding: 12px 8px; }
+  .stat-cell + .stat-cell { border-left: 1px solid var(--border); }
+  .stat-n {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.6rem; font-weight: 800; color: var(--orange); line-height: 1;
+  }
+  .stat-l {
+    font-size: 0.65rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.8px; margin-top: 3px;
+  }
+  .intro-disclaimer {
+    text-align: center; font-size: 0.72rem;
+    color: var(--muted); margin-top: 0.75rem; line-height: 1.5;
+  }
+
+  /* ══════════ DATOS / PREGUNTAS ══════════ */
+  .section-head { margin-bottom: 1.5rem; }
+  .dim-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--orange); margin-bottom: 0.6rem;
+  }
+  .dim-tag::before {
+    content: ''; width: 18px; height: 2px;
+    background: var(--orange); border-radius: 2px;
+  }
+  .section-q {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.05rem; font-weight: 700;
+    line-height: 1.45; color: var(--text);
+  }
+
+  /* ── PROGRESS ── */
+  .prog-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 1.75rem; }
+  .step-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); transition: all 0.3s; flex-shrink: 0;
+  }
+  .step-dot.active { background: var(--orange); transform: scale(1.35); }
+  .step-dot.done   { background: var(--orange); opacity: 0.4; }
+  .prog-line { flex: 1; height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--orange); border-radius: 2px; transition: width 0.4s ease; }
+  .prog-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.7rem; font-weight: 700;
+    color: var(--muted); white-space: nowrap;
+  }
+
+  /* ── FIELDS ── */
+  .field { margin-bottom: 1.1rem; }
+  .field label {
+    display: block; font-size: 0.74rem; font-weight: 600;
+    color: #6b7280; margin-bottom: 0.35rem;
+    text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .field input, .field textarea {
+    width: 100%; background: var(--bg);
+    border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 0.82rem 1rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    color: var(--text); outline: none; resize: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input:focus, .field textarea:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255,91,0,0.1);
+  }
+  .field input::placeholder, .field textarea::placeholder { color: #cbd5e1; }
+  .field textarea { min-height: 108px; line-height: 1.6; }
+  .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+  @media (max-width: 480px) { .fields-grid { grid-template-columns: 1fr; } }
+
+  .field-error {
+    color: #ef4444; font-size: 0.75rem;
+    margin-top: 0.35rem; font-weight: 600;
+    animation: fadeUp 0.2s ease both;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    width: 100%; background: var(--orange); color: #fff;
+    border: none; border-radius: 14px; padding: 1rem 1.5rem;
+    font-family: 'Sora', sans-serif; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-top: 1.25rem; transition: all 0.22s ease;
+  }
+  .btn-primary:hover { background: var(--orange-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,91,0,0.28); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-secondary {
+    width: 100%; background: transparent;
+    border: 1.5px solid var(--border); color: var(--muted);
+    border-radius: 14px; padding: 0.82rem 1.5rem;
+    font-family: 'Sora', sans-serif; font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; margin-top: 0.65rem; transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--orange); color: var(--orange); }
+
+  /* ══════════ LOADING ══════════ */
+  #screen-loading { align-items: center; justify-content: center; }
+  .loader-wrap { text-align: center; }
+  .loader-ring {
+    width: 64px; height: 64px;
+    border: 3px solid var(--border); border-top-color: var(--orange);
+    border-radius: 50%; animation: spin 0.9s linear infinite;
+    margin: 0 auto 1.5rem;
+  }
+  .loading-title { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .loading-sub { font-size: 0.88rem; color: var(--muted); }
+  .loading-dots { margin-top: 1rem; }
+  .loading-dots span {
+    display: inline-block; width: 6px; height: 6px;
+    background: var(--orange); border-radius: 50%; margin: 0 3px;
+    animation: bounce 1.2s infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  /* ══════════ RESULTS ══════════ */
+  #screen-results .inner {
+    width: 100%; max-width: 560px;
+    display: flex; flex-direction: column; gap: 12px;
+    padding-top: 120px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  #screen-results { padding-top: 0; align-items: center; }
+
+  .res-hero {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; box-shadow: var(--shadow);
+    padding: 2rem 1.75rem; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .res-hero::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,91,0,0.05), transparent 65%);
+    pointer-events: none;
+  }
+  .res-greeting { font-family: 'Sora', sans-serif; font-size: 0.84rem; font-weight: 600; color: var(--orange); margin-bottom: 0.3rem; }
+  .res-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 0.25rem; }
+  .score-big { font-family: 'Sora', sans-serif; font-size: clamp(5rem,16vw,7rem); font-weight: 800; color: var(--orange); line-height: 1; margin-bottom: 0.2rem; }
+  .score-max { font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem; }
+  .nivel-pill { display: inline-block; padding: 6px 18px; border-radius: 50px; font-family: 'Sora', sans-serif; font-size: 0.78rem; font-weight: 700; margin-bottom: 1rem; }
+  .nivel-low      { background:#f0fdf4; border:1px solid #bbf7d0; color:#16a34a; }
+  .nivel-mid      { background:#fffbeb; border:1px solid #fde68a; color:#d97706; }
+  .nivel-high     { background:var(--orange-dim); border:1px solid var(--orange-border); color:var(--orange); }
+  .nivel-critical { background:#fef2f2; border:1px solid #fecaca; color:#dc2626; }
+  .res-msg { font-size: 0.92rem; color: #4b5563; line-height: 1.65; max-width: 400px; margin: 0 auto; }
+
+  /* dim cards */
+  .dims-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.5rem; }
+  @media (max-width: 480px) { .dims-grid { grid-template-columns: 1fr; } }
+  .dim-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1rem 1.1rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .dim-card:hover { border-color: var(--orange-border); box-shadow: 0 4px 16px rgba(255,91,0,0.08); }
+  .dim-card-label { font-family: 'Sora', sans-serif; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 0.4rem; }
+  .dim-card-pct { font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--orange); margin-bottom: 0.4rem; }
+  .dim-bar-bg { height: 4px; background: var(--border2); border-radius: 4px; overflow: hidden; }
+  .dim-bar-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--orange-light)); border-radius: 4px; width: 0%; transition: width 1s ease 0.3s; }
+  .dim-justificacion { font-size: 0.78rem; color: #6b7280; line-height: 1.5; margin-top: 0.6rem; display: none; }
+  .dim-card.expanded .dim-justificacion { display: block; }
+  .dim-card.expanded { background: #fffaf7; border-color: var(--orange-border); }
+
+  /* NBA */
+  .nba-box {
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    border-radius: 16px; padding: 1.5rem; position: relative; overflow: hidden;
+  }
+  .nba-box::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(255,91,0,0.15), transparent 65%);
+  }
+  .nba-tag { font-family: 'Sora', sans-serif; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--orange); margin-bottom: 0.6rem; }
+  .nba-text { font-size: 0.92rem; color: rgba(255,255,255,0.85); line-height: 1.65; position: relative; }
+
+  .saved-msg {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: #f0fdf4; border: 1px solid #bbf7d0;
+    border-radius: 12px; padding: 1rem 1.1rem;
+    font-size: 0.83rem; color: #15803d; line-height: 1.5;
+  }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes spin   { to{transform:rotate(360deg)} }
+  @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-8px)} }
+  .fade-in { animation: fadeUp 0.45s ease both; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <img src="https://res.cloudinary.com/dwcqgcl0m/image/upload/q_auto/f_auto/v1776721583/krugercorp_logo_ly65c3.jpg" alt="Kruger">
+    <span class="topbar-logo-name">KrugerTech</span>
+  </div>
+</div>
+
+<!-- SCREEN 0 — INTRO -->
+<div class="screen active" id="screen-intro">
+  <div class="screen-bg"></div>
+  <div class="intro-image-hero">
+    <img src="https://res.cloudinary.com/dpcojkrta/image/upload/v1778172793/Kloud_zv1pem.png" alt="Kloud">
+  </div>
+  <div class="inner" style="width:100%;max-width:520px;margin:0 auto;padding-top:220px;position:relative;z-index:1;">
+    <div class="intro-tag">Cloud Intelligence</div>
+    <h1 class="intro-h1">Índice de Madurez<br><span>Cloud</span></h1>
+    <p class="intro-desc">Responde 4 preguntas y descubre en menos de 2 minutos cuál es el nivel real de adopción cloud de tu organización y cuáles son los gaps prioritarios.</p>
+    <div class="stats-strip">
+      <div class="stat-cell"><div class="stat-n">4</div><div class="stat-l">Preguntas</div></div>
+      <div class="stat-cell"><div class="stat-n">~2</div><div class="stat-l">Minutos</div></div>
+      <div class="stat-cell"><div class="stat-n">4</div><div class="stat-l">Dimensiones</div></div>
+    </div>
+    <button class="btn-primary" onclick="goTo('screen-datos')">
+      Iniciar diagnóstico
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <p class="intro-disclaimer">Sin registro previo · Resultados inmediatos · 100% confidencial</p>
+  </div>
+</div>
+
+<!-- SCREEN 1 — DATOS -->
+<div class="screen" id="screen-datos">
+  <div class="screen-plain-bg"></div>
+  <div class="card card-sm fade-in">
+    <div class="prog-wrap">
+      <div class="step-dot active"></div>
+      <div class="prog-line"><div class="prog-fill" style="width:0%"></div></div>
+      <div class="step-dot"></div>
+      <div class="prog-line"><div class="prog-fill" style="width:0%"></div></div>
+      <div class="step-dot"></div>
+      <div class="prog-line"><div class="prog-fill" style="width:0%"></div></div>
+      <div class="step-dot"></div>
+      <div class="prog-line"><div class="prog-fill" style="width:0%"></div></div>
+      <div class="step-dot"></div>
+      <span class="prog-label">Paso 1 de 5</span>
+    </div>
+    <div class="section-head">
+      <div class="dim-tag">Tus datos</div>
+      <div class="section-q">Antes de comenzar, cuéntanos quién eres</div>
+    </div>
+    <div class="fields-grid">
+      <div class="field"><label>Nombre completo *</label><input type="text" id="f-nombre" placeholder="Juan Pérez"></div>
+      <div class="field"><label>Celular *</label><input type="tel" id="f-celular" placeholder="+593 99 000 0000"></div>
+      <div class="field"><label>Correo corporativo *</label><input type="email" id="f-correo" placeholder="juan@empresa.com"></div>
+      <div class="field"><label>Empresa *</label><input type="text" id="f-empresa" placeholder="Nombre de tu empresa"></div>
+    </div>
+    <div class="field"><label>Cargo *</label><input type="text" id="f-cargo" placeholder="Gerente de TI"></div>
+    <button class="btn-primary" onclick="nextStep(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- SCREEN 2 — ESTRATEGIA Y GOBERNANZA -->
+<div class="screen" id="screen-q1">
+  <div class="screen-plain-bg"></div>
+  <div class="card card-sm fade-in">
+    <div class="prog-wrap" id="prog-q1"></div>
+    <div class="section-head">
+      <div class="dim-tag">Estrategia y Gobernanza Cloud</div>
+      <div class="section-q">¿Cómo está estructurada su estrategia cloud? Describa el modelo de nube que usan, si hay patrocinio ejecutivo y cómo gestionan costos. Si están en etapas tempranas, cuéntenos qué han definido hasta ahora.</div>
+    </div>
+    <div class="field">
+      <label>Tu respuesta</label>
+      <textarea id="f-r1" placeholder="Ej: migramos el 60% de nuestra infraestructura a AWS, tenemos un equipo de cloud con presupuesto definido y revisiones mensuales de costos..."></textarea>
+    </div>
+    <button class="btn-primary" onclick="nextStep(2)">Siguiente →</button>
+    <button class="btn-secondary" onclick="prevStep('screen-datos', 0)">← Volver</button>
+  </div>
+</div>
+
+<!-- SCREEN 3 — SEGURIDAD Y CUMPLIMIENTO -->
+<div class="screen" id="screen-q2">
+  <div class="screen-plain-bg"></div>
+  <div class="card card-sm fade-in">
+    <div class="prog-wrap" id="prog-q2"></div>
+    <div class="section-head">
+      <div class="dim-tag">Seguridad y Cumplimiento Cloud</div>
+      <div class="section-q">¿Cómo gestionan la seguridad y el cumplimiento en entornos cloud? Mencione políticas, gestión de identidades y auditorías. Si algunas prácticas son aún informales, descríbalo con confianza.</div>
+    </div>
+    <div class="field">
+      <label>Tu respuesta</label>
+      <textarea id="f-r2" placeholder="Ej: tenemos políticas IAM definidas, MFA obligatorio para todos los accesos, y realizamos revisiones de seguridad trimestrales..."></textarea>
+    </div>
+    <button class="btn-primary" onclick="nextStep(3)">Siguiente →</button>
+    <button class="btn-secondary" onclick="prevStep('screen-q1', 1)">← Volver</button>
+  </div>
+</div>
+
+<!-- SCREEN 4 — PLATAFORMA E INFRAESTRUCTURA -->
+<div class="screen" id="screen-q3">
+  <div class="screen-plain-bg"></div>
+  <div class="card card-sm fade-in">
+    <div class="prog-wrap" id="prog-q3"></div>
+    <div class="section-head">
+      <div class="dim-tag">Plataforma e Infraestructura Cloud</div>
+      <div class="section-q">¿Qué capacidades de infraestructura cloud tienen implementadas? Indique uso de automatización, escalabilidad y tecnologías como contenedores o microservicios. Si están en transición, describa en qué punto se encuentran.</div>
+    </div>
+    <div class="field">
+      <label>Tu respuesta</label>
+      <textarea id="f-r3" placeholder="Ej: usamos Kubernetes en GKE para nuestras aplicaciones críticas, con autoscaling configurado y monitoreo con Datadog..."></textarea>
+    </div>
+    <button class="btn-primary" onclick="nextStep(4)">Siguiente →</button>
+    <button class="btn-secondary" onclick="prevStep('screen-q2', 2)">← Volver</button>
+  </div>
+</div>
+
+<!-- SCREEN 5 — DESARROLLO E INNOVACIÓN -->
+<div class="screen" id="screen-q4">
+  <div class="screen-plain-bg"></div>
+  <div class="card card-sm fade-in">
+    <div class="prog-wrap" id="prog-q4"></div>
+    <div class="section-head">
+      <div class="dim-tag">Desarrollo e Innovación Cloud</div>
+      <div class="section-q">¿Cómo innovan y desarrollan sobre la nube? Describa metodologías ágiles, pipelines CI/CD e integración mediante APIs. Si no han adoptado estas prácticas completamente, cuéntenos qué está en su hoja de ruta.</div>
+    </div>
+    <div class="field">
+      <label>Tu respuesta</label>
+      <textarea id="f-r4" placeholder="Ej: usamos GitHub Actions para CI/CD, trabajamos con metodología Scrum y estamos migrando nuestras aplicaciones monolíticas a microservicios..."></textarea>
+    </div>
+    <button class="btn-primary" id="btn-submit" onclick="submitForm()">Obtener mi diagnóstico →</button>
+    <button class="btn-secondary" onclick="prevStep('screen-q3', 3)">← Volver</button>
+  </div>
+</div>
+
+<!-- SCREEN — LOADING -->
+<div class="screen" id="screen-loading">
+  <div class="screen-plain-bg"></div>
+  <div class="loader-wrap">
+    <div class="loader-ring"></div>
+    <div class="loading-title">Analizando tu madurez cloud</div>
+    <div class="loading-sub">Kruger IA está evaluando tus respuestas...</div>
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<!-- SCREEN — RESULTS -->
+<div class="screen" id="screen-results">
+  <div class="screen-bg"></div>
+  <div class="intro-image-hero" style="z-index:0;">
+    <img src="https://res.cloudinary.com/dpcojkrta/image/upload/v1778172793/Kloud_zv1pem.png" alt="Kloud">
+  </div>
+  <div class="inner">
+    <div class="res-hero fade-in">
+      <div class="res-greeting" id="res-greeting">Hola, aquí está tu diagnóstico 👋</div>
+      <div class="res-label">SCORE DE MADUREZ CLOUD</div>
+      <div class="score-big" id="res-score">—</div>
+      <div class="score-max">de 20 puntos posibles</div>
+      <div class="nivel-pill" id="res-nivel-pill">—</div>
+      <div class="res-msg" id="res-mensaje"></div>
+    </div>
+    <div class="dims-grid" id="dims-grid"></div>
+    <div class="nba-box">
+      <div class="nba-tag">⚡ Next Best Action</div>
+      <div class="nba-text" id="res-nba"></div>
+    </div>
+    <div class="saved-msg">
+      <span>✅</span>
+      <span>Tu diagnóstico fue guardado. El equipo de KrugerTech estará en contacto contigo.</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const WEBHOOK_URL = 'https://krugercorporation.app.n8n.cloud/webhook/cloud-scorecard';
+const STEP_LABELS = ['Paso 1 de 5','Paso 2 de 5','Paso 3 de 5','Paso 4 de 5','Paso 5 de 5'];
+
+function renderProg(containerId, step) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  let html = '';
+  for (let i = 0; i <= 4; i++) {
+    const cls = i < step ? 'step-dot done' : i === step ? 'step-dot active' : 'step-dot';
+    html += `<div class="${cls}"></div>`;
+    if (i < 4) html += `<div class="prog-line"><div class="prog-fill" style="width:${i < step ? '100' : '0'}%"></div></div>`;
+  }
+  html += `<span class="prog-label">${STEP_LABELS[step] || ''}</span>`;
+  c.innerHTML = html;
+}
+
+function showError(el, msg) {
+  el.style.borderColor = '#ef4444';
+  let err = el.parentElement.querySelector('.field-error');
+  if (!err) { err = document.createElement('div'); err.className = 'field-error'; el.parentElement.appendChild(err); }
+  err.textContent = msg; el.focus();
+}
+function clearError(el) {
+  el.style.borderColor = '';
+  const err = el.parentElement.querySelector('.field-error');
+  if (err) err.remove();
+}
+
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep(step) {
+  if (step === 1) {
+    const ids = ['f-nombre','f-celular','f-correo','f-empresa','f-cargo'];
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) { showError(el, 'Este campo es obligatorio.'); return; }
+      else { clearError(el); }
+    }
+    renderProg('prog-q1', 1); goTo('screen-q1');
+  } else if (step === 2) {
+    const ta = document.getElementById('f-r1');
+    if (!ta.value.trim() || ta.value.trim().length < 10) { showError(ta, 'Por favor describe tu situación con al menos 10 caracteres.'); return; }
+    clearError(ta); renderProg('prog-q2', 2); goTo('screen-q2');
+  } else if (step === 3) {
+    const ta = document.getElementById('f-r2');
+    if (!ta.value.trim() || ta.value.trim().length < 10) { showError(ta, 'Por favor describe tu situación con al menos 10 caracteres.'); return; }
+    clearError(ta); renderProg('prog-q3', 3); goTo('screen-q3');
+  } else if (step === 4) {
+    const ta = document.getElementById('f-r3');
+    if (!ta.value.trim() || ta.value.trim().length < 10) { showError(ta, 'Por favor describe tu situación con al menos 10 caracteres.'); return; }
+    clearError(ta); renderProg('prog-q4', 4); goTo('screen-q4');
+  }
+}
+
+function prevStep(screenId, step) {
+  if (step === 0) { goTo('screen-datos'); return; }
+  const progId = ['prog-q1','prog-q2','prog-q3','prog-q4'][step - 1];
+  if (progId) renderProg(progId, step);
+  goTo(screenId);
+}
+
+async function submitForm() {
+  const ta = document.getElementById('f-r4');
+  if (!ta.value.trim() || ta.value.trim().length < 10) { showError(ta, 'Por favor describe tu situación con al menos 10 caracteres.'); return; }
+  clearError(ta);
+  goTo('screen-loading');
+  const payload = {
+    nombre:      document.getElementById('f-nombre').value.trim(),
+    celular:     document.getElementById('f-celular').value.trim(),
+    correo:      document.getElementById('f-correo').value.trim(),
+    empresa:     document.getElementById('f-empresa').value.trim(),
+    cargo:       document.getElementById('f-cargo').value.trim(),
+    respuesta_1: document.getElementById('f-r1').value.trim(),
+    respuesta_2: document.getElementById('f-r2').value.trim(),
+    respuesta_3: document.getElementById('f-r3').value.trim(),
+    respuesta_4: document.getElementById('f-r4').value.trim(),
+    timestamp:   new Date().toISOString()
+  };
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    renderResults(data);
+  } catch (err) {
+    console.error(err);
+    goTo('screen-q4');
+    alert('Ocurrió un error al enviar tu diagnóstico. Por favor intenta nuevamente.');
+  }
+}
+
+function renderResults(data) {
+  document.getElementById('res-greeting').textContent = `Hola ${data.nombre}, aquí está tu diagnóstico 👋`;
+  document.getElementById('res-score').textContent = data.score_total;
+
+  const pill = document.getElementById('res-nivel-pill');
+  pill.textContent = data.nivel;
+  const nivelMap = {
+    'Madurez cloud consolidada': 'nivel-low',
+    'Madurez cloud avanzada':    'nivel-mid',
+    'Transformación en progreso':'nivel-high',
+    'Adopción incipiente':       'nivel-critical'
+  };
+  pill.className = 'nivel-pill ' + (nivelMap[data.nivel] || 'nivel-high');
+
+  document.getElementById('res-mensaje').textContent = data.mensaje_nivel || '';
+
+  const dims = [
+    { key: 'estrategia_gobernanza',    label: 'Estrategia y Gobernanza'    },
+    { key: 'seguridad_cumplimiento',   label: 'Seguridad y Cumplimiento'   },
+    { key: 'plataforma_infraestructura', label: 'Plataforma e Infraestructura' },
+    { key: 'desarrollo_innovacion',    label: 'Desarrollo e Innovación'    }
+  ];
+  const grid = document.getElementById('dims-grid');
+  grid.innerHTML = '';
+  dims.forEach(d => {
+    const dim = data.dimensiones[d.key];
+    const pct = dim.porcentaje;
+    const card = document.createElement('div');
+    card.className = 'dim-card';
+    card.innerHTML = `
+      <div class="dim-card-label">${d.label}</div>
+      <div class="dim-card-pct">${pct}%</div>
+      <div class="dim-bar-bg"><div class="dim-bar-fill" data-pct="${pct}"></div></div>
+      <div class="dim-justificacion">${dim.justificacion}</div>
+    `;
+    card.addEventListener('click', () => card.classList.toggle('expanded'));
+    grid.appendChild(card);
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.dim-bar-fill').forEach(b => { b.style.width = b.dataset.pct + '%'; });
+  }, 120);
+
+  document.getElementById('res-nba').textContent = data.nba;
+  goTo('screen-results');
+}
+</script>
+</body>
+</html>
